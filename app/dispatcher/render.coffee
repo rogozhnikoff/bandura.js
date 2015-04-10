@@ -5,7 +5,16 @@ module.exports = ->
   UI = do renderUI
   playlistsCollection.onValue (PLC) ->
     UI.player.setProps PLCollection: PLC
-    UI.progressbar.setProps currentTrack: PLC?.getActivePlaylist()?.getActiveTrack()
+
+    currentTrack = PLC?.getActivePlaylist()?.getActiveTrack()
+    UI.progressbar.setProps {currentTrack}
+
+    unless currentTrack?
+      UI.progressbar.setProps
+        position: undefined
+        duration: undefined
+        loaded: undefined
+
 
   progressbar.onValue (progressbar) ->
     UI.progressbar.setProps

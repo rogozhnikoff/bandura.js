@@ -15,7 +15,7 @@ module.exports = React.createClass
     showTime = ''
     loaded = 0
 
-    if @props.position? and currentTrack?
+    if @props.position?
       trackInfo = "#{currentTrack.name} : #{currentTrack.artist}" if currentTrack?
       trackTime =
         min : Math.floor(@props.duration/60000)
