@@ -24,11 +24,17 @@ class PLCollection
     return new PLCollection Utils.insertOn(@_playlists, playlist, position or @_playlists.length), @_activeId
 
   removePlaylist: (playlist) ->
+    if playlist is @getActivePlaylist()
+      bandura.stop()
+
     position = @_playlists.indexOf(playlist)
     activeId = if @_activeId is playlist.getId() then null else @_activeId
     return new PLCollection Utils.removeFrom(@_playlists, position), activeId
 
   removeTrack: (playlist, track) ->
+    if playlist is @getActivePlaylist() and playlist.getActiveTrack() is track
+      bandura.stop()
+
     return @update(playlist.removeTrack(track))
 
   update: (playlist) ->
