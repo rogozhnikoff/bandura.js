@@ -26,17 +26,31 @@ playlistsCollection = collections.scan(new PLCollection(), (collection, ev) ->
 )
 
 
+stopStream = controls.filter((ev)->
+  return ev.action is 'stop'
+).map(->
+  return {
+    smTrack: null
+  }
+)
 
 #intrested in activeTrack progress only
 progressbar = playlistsCollection.sampledBy(progress,(collection, smTrack) ->
   isActive = collection.getActivePlaylist()?.getActiveTrack().id is smTrack.id
   {smTrack, isActive}
-).filter(({isActive}) -> isActive).map(({smTrack}) ->
-  {
-  position: smTrack.position
-  duration: smTrack.duration
-  loaded: smTrack.bytesLoaded / smTrack.bytesTotal
-  }
+).filter(({isActive}) -> isActive).merge(stopStream).map(({smTrack}) ->
+  if smTrack?
+    return {
+      position: smTrack.position
+      duration: smTrack.duration
+      loaded: smTrack.bytesLoaded / smTrack.bytesTotal
+    }
+  else
+    return {
+      position: null
+      duration: null
+      loaded: null
+    }
 )
 
 #Changes volume of current track(SM can't change volume on all tracks)
